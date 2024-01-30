@@ -1,7 +1,5 @@
 package com.fges.todoapp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -14,62 +12,106 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-// Nouvelle classe pour la gestion des commandes
-class CommandProcessor {
-    public static int process(String command, String fileName, List<String> positionalArgs, String fileContent) throws JsonMappingException, JsonProcessingException {
-        // Logique de traitement des commandes
-        if (command.equals("insert")) {
-            // Logique d'insertion des tâches
-            if (positionalArgs.size() < 2) {
-                System.err.println("Missing TODO name");
-                return 1;
-            }
-            String todo = positionalArgs.get(1);
+public class App {
 
-            if (fileName.endsWith(".json")) {
-                // Traitement pour les fichiers JSON
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode actualObj = mapper.readTree(fileContent);
-                if (actualObj instanceof MissingNode) {
-                    actualObj = JsonNodeFactory.instance.arrayNode();
-                }
+    // Nouvelle classe pour la gestion des arguments en ligne de commande
+    private static class CommandLineHandler {
+        public static CommandLine parseCommandLine(String[] args) throws ParseException {
+            Options cliOptions = new Options();
+            cliOptions.addRequiredOption("s", "source", true, "File containing the todos");
+            CommandLineParser parser = new DefaultParser();
+            return parser.parse(cliOptions, args);
+        }
+    }
 
-                if (actualObj instanceof ArrayNode arrayNode) {
-                    arrayNode.add(todo);
-                }
-
-                try {
-                    Files.writeString(Paths.get(fileName), actualObj.toString());
-                } catch (IOException e) {
-                    System.err.println("Error writing to file: " + e.getMessage());
-                    return 1;
-                }
-            }
-            if (fileName.endsWith(".csv")) {
-                // Traitement pour les fichiers CSV
-                if (!fileContent.endsWith("\n") && !fileContent.isEmpty()) {
-                    fileContent += "\n";
-                }
-                fileContent += todo;
-
-                try {
-                    Files.writeString(Paths.get(fileName), fileContent);
-                } catch (IOException e) {
-                    System.err.println("Error writing to file: " + e.getMessage());
-                    return 1;
-                }
-            }
+    // Nouvelle classe pour la manipulation de fichiers
+    private static class FileHandler {
+        public static String readFileContent(String fileName) throws IOException {
+            Path filePath = Paths.get(fileName);
+            return Files.exists(filePath) ? Files.readString(filePath) : "";
         }
 
-        if (command.equals("list")) {
-            // Logique d'affichage des tâches
+        public static void writeToFile(String fileName, String content) throws IOException {
+            Files.writeString(Paths.get(fileName), content);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.exit(exec(args));
+    }
+
+    public static int exec(String[] args) {
+        try {
+            CommandLine cmd = CommandLineHandler.parseCommandLine(args);
+            String fileName = cmd.getOptionValue("s");
+
+            List<String> positionalArgs = cmd.getArgList();
+            if (positionalArgs.isEmpty()) {
+                System.err.println("Missing Command");
+                return 1;
+            }
+
+            String command = positionalArgs.get(0);
+            String fileContent = FileHandler.readFileContent(fileName);
+
+            if (command.equals("insert")) {
+                handleInsertCommand(fileName, positionalArgs, fileContent);
+            }
+
+            if (command.equals("list")) {
+                handleListCommand(fileName, fileContent);
+            }
+
+            System.err.println("Done.");
+            return 0;
+        } catch (ParseException | IOException ex) {
+            System.err.println("Error: " + ex.getMessage());
+            return 1;
+        }
+    }
+
+    // Nouvelle méthode pour gérer la commande "insert"
+    private static void handleInsertCommand(String fileName, List<String> positionalArgs, String fileContent) throws IOException {
+        if (positionalArgs.size() < 2) {
+            System.err.println("Missing TODO name");
+            System.exit(1);
+        }
+        String todo = positionalArgs.get(1);
+
+        if (fileName.endsWith(".json")) {
+            // JSON
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode actualObj = mapper.readTree(fileContent);
+            if (actualObj instanceof MissingNode) {
+                actualObj = JsonNodeFactory.instance.arrayNode();
+            }
+
+            if (actualObj instanceof ArrayNode arrayNode) {
+                arrayNode.add(todo);
+            }
+
+            FileHandler.writeToFile(fileName, actualObj.toString());
+        }
+
+        if (fileName.endsWith(".csv")) {
+            // CSV
+            if (!fileContent.endsWith("\n") && !fileContent.isEmpty()) {
+                fileContent += "\n";
+            }
+            fileContent += todo;
+
+            FileHandler.writeToFile(fileName, fileContent);
+        }
+    }
+
+    // Nouvelle méthode pour gérer la commande "list"
+    private static void handleListCommand(String fileName, String fileContent) {
+        try {
             if (fileName.endsWith(".json")) {
-                // Traitement pour les fichiers JSON
+                // JSON
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode actualObj = mapper.readTree(fileContent);
                 if (actualObj instanceof MissingNode) {
@@ -80,75 +122,16 @@ class CommandProcessor {
                     arrayNode.forEach(node -> System.out.println("- " + node.toString()));
                 }
             }
+
             if (fileName.endsWith(".csv")) {
-                // Traitement pour les fichiers CSV
+                // CSV
                 System.out.println(Arrays.stream(fileContent.split("\n"))
                         .map(todo -> "- " + todo)
                         .collect(Collectors.joining("\n"))
                 );
             }
-        }
-
-        System.err.println("Done.");
-        return 0;
-    }
-}
-
-// Nouvelle classe pour la gestion des options de ligne de commande
-class CommandLineParser {
-    public static CommandLine parse(String[] args) {
-        Options cliOptions = new Options();
-        cliOptions.addRequiredOption("s", "source", true, "File containing the todos");
-
-        DefaultParser parser = new DefaultParser();
-        try {
-            return parser.parse(cliOptions, args);
-        } catch (ParseException ex) {
-            System.err.println("Fail to parse arguments: " + ex.getMessage());
-            System.exit(1);
-            return null;
-        }
-    }
-}
-
-// Nouvelle classe pour l'interaction avec les fichiers
-class FileManager {
-    public static String readFileContent(String filePath) {
-        Path path = Paths.get(filePath);
-        try {
-            return Files.exists(path) ? Files.readString(path) : "";
         } catch (IOException e) {
-            System.err.println("Error reading from file: " + e.getMessage());
-            System.exit(1);
-            return null;
+            System.err.println("Error while processing file: " + e.getMessage());
         }
-    }
-
-    public static void writeFileContent(String filePath, String content) {
-        try {
-            Files.writeString(Paths.get(filePath), content);
-        } catch (IOException e) {
-            System.err.println("Error writing to file: " + e.getMessage());
-            System.exit(1);
-        }
-    }
-}
-
-// Classe principale App
-public class App {
-    public static void main(String[] args) throws JsonMappingException, JsonProcessingException {
-        System.exit(exec(args));
-    }
-
-    public static int exec(String[] args) throws JsonMappingException, JsonProcessingException {
-        CommandLine cmd = CommandLineParser.parse(args);
-        String fileName = cmd.getOptionValue("s");
-        List<String> positionalArgs = cmd.getArgList();
-        String fileContent = FileManager.readFileContent(fileName);
-
-        String command = positionalArgs.isEmpty() ? "" : positionalArgs.get(0);
-
-        // Appel de la méthode de traitement des commandes
-        return CommandProcessor.process(command, fileName, positionalArgs, fileContent);
     }
 }
