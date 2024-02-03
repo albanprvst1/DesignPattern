@@ -3,6 +3,8 @@ package com.fges.todoapp.e2e;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fges.todoapp.App;
+import com.fges.todoapp.logic.TodoLogic;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,49 +22,23 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class GhostTests {
 
-    /**
-     * Version of the TP to use with the API, refer to the TP name on the slides!!
-     */
     private static final String TP_NAME = "tp1";
-
-    /**
-     * Should not change
-     */
     private static final String API_ENDPOINT = "https://testcase-api.jho.ovh";
 
-    /**
-     * Represents a sequence of command execution and their results.
-     * Stdout is used to compare results, that's why the
-     *
-     * @param sequence List of arguments of the commands to execute. Example:<br>
-     *                 {"insert", "-s", "source.json", "Hello World"},<br>
-     *                 {"insert", "-s", "source.json", "Bye"},<br>
-     *                 {"list", "-s", "source.json"},
-     * @param stdoutLines List of lines in the stdout
-     * @param exitCode Exit code of the program
-     */
     public record ExecOutput(List<List<String>> sequence, List<String> stdoutLines, int exitCode) {
     }
 
-    // Execution output used for the test
     private final ExecOutput execOutput;
 
     public GhostTests(ExecOutput execOutput) {
         this.execOutput = execOutput;
     }
 
-    /**
-     * Remove if you want to keep temporary test files
-     */
     @After
     public void after() {
         deleteTmpFiles();
     }
 
-    /**
-     * The test
-     * @throws Exception Any exception, it's ok to not handle them in tests because
-     */
     @Test
     public void ghostTest() throws Exception{
         Assert.assertEquals(this.execOutput, runMain(this.execOutput.sequence));
@@ -107,9 +83,6 @@ public class GhostTests {
         }
     }
 
-    /**
-     * The API gives sequences of code that uses the
-     */
     private void deleteTmpFiles() {
         File directory = Paths.get(System.getProperty("user.dir")).toFile();
         var files = directory.listFiles();
@@ -132,6 +105,4 @@ public class GhostTests {
                 o -> new Object[]{o}
         ).toList();
     }
-
-
 }
