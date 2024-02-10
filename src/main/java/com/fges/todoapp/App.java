@@ -1,11 +1,10 @@
+// App.java
 package com.fges.todoapp;
 
-import com.fges.todoapp.logic.TodoLogic; 
+import com.fges.todoapp.ui.TodoUI;
 
 public class App {
-
-    public static void main(String[] args) throws Exception {
-        System.exit(TodoLogic.exec(args));
+    public static void main(String[] args) {
+        TodoUI.main(args);
     }
-
 }
