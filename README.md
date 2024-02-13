@@ -60,3 +60,17 @@ J'ai réorganisé le code  en une architecture trois tiers en utilisant des pack
     
 -Anything relevant:
     Expérience enrichissante: Approfondissement connaissances développement.
+    
+## SEMAINE 4 : ADD BOUTON DONE 
+
+- **What you did and why:** Ajout d'une fonctionnalité pour marquer les tâches comme "Done" dans une application Java. La décision était motivée par le besoin d'améliorer la gestion des tâches et de fournir une meilleure visibilité sur leur état.
+
+- **What helped you and why:** La connaissance approfondie de Java et l'expérience préalable ont été des atouts majeurs. Cela a facilité l'ajout de la nouvelle fonctionnalité et a permis de résoudre rapidement les problèmes.
+
+- **What did you find difficult:** La difficulté principale était liée à la structuration du code pour garantir la clarté et la maintenabilité. La gestion des états "Done" et "Not Done" a nécessité une attention particulière.
+
+- **What did not help you:** Le manque de ressources spécifiques, comme des modèles de données bien définis, a posé des défis dans l'implémentation de la nouvelle fonctionnalité. La gestion des erreurs était également une préoccupation.
+
+- **What did you need to change:** Des ajustements dans l'architecture ont été nécessaires pour intégrer la nouvelle fonctionnalité "Done". Cela a impliqué des modifications pour améliorer la clarté du code et faciliter la gestion des états.
+
+- **Anything relevant:** L'expérience a été éducative, offrant une opportunité d'approfondir la compréhension du développement logiciel. Les ajustements apportés à l'architecture ont été essentiels pour résoudre les problèmes rencontrés lors de l'implémentation de la fonctionnalité "Done".
