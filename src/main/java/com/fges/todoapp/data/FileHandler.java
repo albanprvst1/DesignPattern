@@ -1,4 +1,3 @@
-// FileHandler.java
 package com.fges.todoapp.data;
 
 import java.io.IOException;
