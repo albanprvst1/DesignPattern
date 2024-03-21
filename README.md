@@ -74,3 +74,23 @@ J'ai réorganisé le code  en une architecture trois tiers en utilisant des pack
 - **What did you need to change:** Des ajustements dans l'architecture ont été nécessaires pour intégrer la nouvelle fonctionnalité "Done". Cela a impliqué des modifications pour améliorer la clarté du code et faciliter la gestion des états.
 
 - **Anything relevant:** L'expérience a été éducative, offrant une opportunité d'approfondir la compréhension du développement logiciel. Les ajustements apportés à l'architecture ont été essentiels pour résoudre les problèmes rencontrés lors de l'implémentation de la fonctionnalité "Done".
+- 
+## SEMAINE 5 : migrate + csv file added
+
+### Ce qui a été réalisé et pourquoi
+ajout de la fonctionnalité migrate dans le csv et affichage filtré des deux types 
+
+### Ce qui a été utile et pourquoi
+La solide compréhension de Java et de l'architecture de notre application acquise au fil des semaines précédentes m'a grandement aidé dans l'implémentation de ces nouvelles fonctionnalités. 
+
+### Ce qui a été difficile
+La principale difficulté rencontrée a été de garantir que les nouvelles fonctionnalités s'intègrent de manière cohérente avec l'interface utilisateur existante + j'ai eu un soucis lors de l'insert dans les fichiers json puis csv après, mes données s'écrivaient après les crochets ^^
+
+### Ce qui n'a pas été utile
+Le manque de documentation détaillée sur les meilleures pratiques en matière d'interface utilisateur a rendu la conception de certaines parties de l'interface plus laborieuse que prévu. 
+
+### Ce qui a dû être modifié
+modification du fichier des fichiers todologic et todoui
+
+### Informations pertinentes
+j'ai enfin compris comment filtrer les recherches 
