@@ -8,16 +8,16 @@ if ! compileErrors=$(mvn compile 2>&1); then
   exit 1
 fi
 
-args=""
+args=()
 for arg in "$@"
 do
-    args="$args \"$arg\"";
+    args+=("$arg")
 done
 
 mavenFlags+=("-q") # Display only errors
 
 >&2 echo -e "Package: [$packageName]"
->&2 echo -e "Executing with args: [$args]"
+>&2 echo -e "Executing with args: [${args[*]}]"
 >&2 echo -e "Maven flags: [$mavenFlags]"
 
-mvn $mavenFlags exec:java -Dexec.mainClass="$packageName" -Dexec.args="$args"
+mvn "${mavenFlags[@]}" exec:java -Dexec.mainClass="$packageName" -Dexec.args="${args[*]}"
