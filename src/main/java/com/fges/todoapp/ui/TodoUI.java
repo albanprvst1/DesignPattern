@@ -1,7 +1,7 @@
 package com.fges.todoapp.ui;
 
 import com.fges.todoapp.data.FileHandler;
-import com.fges.todoapp.data.FileSystemManager; // Importer FileSystemManager
+import com.fges.todoapp.data.FileSystemManager; 
 import com.fges.todoapp.logic.TodoInsertionLogic;
 import com.fges.todoapp.logic.TodoListingLogic;
 import com.fges.todoapp.logic.TodoMigrationLogic;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class TodoUI {
     public static void main(String[] args) {
-        FileHandler fileHandler = new FileHandler(new FileSystemManager()); // Utiliser FileSystemManager
+        FileHandler fileHandler = new FileHandler(new FileSystemManager()); 
         TodoInsertionLogic insertionLogic = new TodoInsertionLogic(fileHandler);
         TodoListingLogic listingLogic = new TodoListingLogic(fileHandler);
         TodoMigrationLogic migrationLogic = new TodoMigrationLogic(fileHandler);
